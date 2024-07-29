@@ -42,14 +42,15 @@ A_go = (S_go * L_go) / (S_kr * b_a)
 mask = S >= 0
 
 # Апроксимация
-coefficient = np.polyfit(alpha[mask], S_pot[mask], len(alpha[mask]))
+coefficient = np.polyfit(alpha[mask], S_pot[mask], len(alpha[mask]) - 1)
 p = np.poly1d(coefficient)
 x = np.linspace(alpha.min(), alpha.max(), 100)
 y = p(x)
 print(p)
 
 # Построение графика
-plt.plot(alpha[mask], S_pot[mask], x, y)
+plt.plot(alpha[mask], S_pot[mask], label='Data points')
+plt.plot(x, y, label=f'Polynomial fit (degree)')
 plt.xlabel('Angle of Attack (degrees)')
 plt.ylabel('Required wing area (S)')
 plt.title('S_pot vs. Angle of Attack for NACA 23009')
