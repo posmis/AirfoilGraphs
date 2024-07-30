@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # Исходные данные
 m = 8
@@ -15,10 +16,11 @@ b_a = b_k
 g = 9.81
 ro = 1.225
 
-# Считывание пути к файлу из консоли
-file_path = input("Введите путь к файлу: ")
-#C:\Users\posmis\PycharmProjects\Airfoills Graphs\graphs_data\NASA_2210_Cy_alpha.csv
-#file_path='C:\Users\posmis\PycharmProjects\Airfoills Graphs\graphs_data\NASA_2210_Cy_alpha.csv'
+# Задание относительного пути к файлу
+relative_file_path = 'graphs_data/NASA_2210_Cy_alpha.csv'
+# Получение абсолютного пути к файлу
+file_path = os.path.join(os.getcwd(), relative_file_path)
+
 
 # Чтение файла и замена запятых на точки
 with open(file_path, 'r') as file:
@@ -42,21 +44,20 @@ A_go = (S_go * L_go) / (S_kr * b_a)
 mask = S >= 0
 
 # Апроксимация
-coefficient = np.polyfit(alpha[mask], S_pot[mask], len(alpha[mask]) - 1)
+coefficient = np.polyfit(alpha[mask], S_pot[mask], len(S_pot[mask]) - 1)
 p = np.poly1d(coefficient)
-x = np.linspace(alpha.min(), alpha.max(), 100)
-y = p(x)
-print(p)
+x_1 = np.linspace(alpha.min(), alpha.max(), 100)
+y_1 = p(x_1)
 
 # Построение графика
-plt.plot(alpha[mask], S_pot[mask], label='Data points')
-plt.plot(x, y, label=f'Polynomial fit (degree)')
+plt.scatter(alpha[mask], S_pot[mask], label='Data points')
+plt.plot(x_1, y_1, color='orange',label=f'Polynomial fit')
 plt.xlabel('Angle of Attack (degrees)')
 plt.ylabel('Required wing area (S)')
 plt.title('S_pot vs. Angle of Attack for NACA 23009')
 
 for i in range(len(alpha)):
-    plt.text(alpha[i], S_pot[i], f'{S_pot[i]:.2f}', fontsize=8, ha='right')
+    plt.text(alpha[i], S_pot[i], f'{S_pot[i]:.3f}', fontsize=8, ha='right')
 
 plt.legend()
 plt.grid(True)
